@@ -1,0 +1,4 @@
+*.pyc
+.sass-cache/
+*.css.map
+blog/static/blog/style.css

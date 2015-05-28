@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% block style %}
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/1.2/base.min.css">
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/1.2/skeleton.min.css">
+            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/1.2/layout.min.css">
+            {% load staticfiles %}
+            <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+        {% endblock %}
+        <title>{% block title %}{% endblock %}</title>
+        {% block scripts %}
+            <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+        {% endblock %}
+    </head>
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="container">
+                    <div class="navbar-header">
+                        <a href="{% url 'blog:home' %}" class="navbar-brand">PotBlog</a>
+                    </div>
+                    <div id="navbar-main">
+                        <form action="{% url 'blog:search' %}" class="navbar-form navbar-right" id="search" role="search" method="get">
+                            <div class="form-group">
+                                <input type="text" name="query" placeholder="Search" class="form-control">
+                                <input type="submit" value="Search" class="btn btn-default">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </nav>
+
+            <header>
+                {% if user.is_authenticated %}
+                    <p id="login-header">Logged in as {{ user.username }} (<a href="{% url 'accounts:logout' %}" id="logout">Log out</a>) | <a href="{% url 'blog:create_post' %}" id="create-post">Create post</a></p>
+                {% endif %}
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </header>
+
+            {% block content %}{% endblock %}
+        </div>
+    </body>
+</html>

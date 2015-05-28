@@ -1,0 +1,65 @@
+{% extends "blog/base.html" %}
+
+{% load bootstrap3 %}
+
+{% block title %}PotBlog - {{ post.title }}{% endblock title %}
+
+{% block content %}
+    <div class="post">
+        <h1 class="post-title">
+            <a href="{% url 'blog:post_detail' post.pk %}">{{ post.title }}</a>
+            {% if user.is_authenticated %}
+                <span id="post-update">(<a href="{% url 'blog:update_post' post.pk %}">Update</a>)</span>
+            {% endif %}
+        </h1>
+        <p class="post-text">{{ post.text }}</p>    
+
+        <p class="post-date">- Posted on {{ post.date_published }}</p>
+    </div>
+
+    <hr>
+
+    <div class="comments">
+        <h2 id="comment-title">Comments</h2>
+
+        {% if comments %}
+            <ul>
+            {% for comment in comments %}
+                <li>
+                    <h3 id="comment-author">{{ comment.author }}</h3>
+                    <h3 id="comment-email">{{ comment.email }}</h3>
+                    {% if comment.is_hidden %}
+                        <p id="comment-hidden">[ Hidden ]</p>
+                    {% else %}
+                        <p id="comment-text">{{ comment.text }}</p>
+                    {% endif %}
+                    <h4 id="comment-date">{{ comment.date_published }}</h4>
+
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'blog:hide_comment' comment.pk %}" method="post">
+                            {% csrf_token %}
+                            {% if comment.is_hidden %}
+                                <input type="submit" value="Unhide" class="hide-button"/>
+                            {% else %}
+                                <input type="submit" value="Hide" class="hide-button"/>
+                            {% endif %}
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            </ul>
+        {% else %}
+            <p id="no-comments">No comments.</p>
+        {% endif %}
+    </div>
+
+    <div class="comment-form">
+        <form action="{% url 'blog:post_detail' post.pk %}" method="post">
+            {% csrf_token %}
+            {% load bootstrap3 %}
+            {% bootstrap_form comment_form %}
+            <input type="submit" value="Comment" id="comment-button"/>
+        </form>
+    </div>
+
+{% endblock content %}

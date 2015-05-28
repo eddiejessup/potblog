@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+
+{% block title %}PotBlog - Update post{% endblock title %}
+
+{% block content %}
+    <h1 class="page-title">Update post</h1>
+
+    <form action="{{ request.path }}" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" value="Update" />
+    </form>
+
+    <form action="{% url 'blog:delete_post' post.id %}" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Delete" />
+    </form>
+{% endblock content %}
