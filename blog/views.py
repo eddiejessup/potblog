@@ -1,16 +1,25 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.core.urlresolvers import reverse
-from django.views import generic
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from blog.models import Post, Comment
 from blog.forms import CreatePostForm, CreateCommentForm
 
 
-class HomeView(generic.ListView):
-    template_name = 'blog/home.html'
-    context_object_name = 'all_posts'
-    queryset = Post.objects.order_by('-date_published')
+def home(request, page=1):
+    all_posts_actual = Post.objects.order_by('-date_published')
+    paginator = Paginator(all_posts_actual, 3)
+
+    try:
+        page_posts = paginator.page(page)
+    except PageNotAnInteger:
+        page_posts = paginator.page(1)
+    except EmptyPage:
+        page_posts = paginator.page(paginator.num_pages)
+
+    return render(request, 'blog/home.html',
+                  {'posts': page_posts})
 
 
 def post_detail(request, post_pk):
@@ -81,7 +90,7 @@ def search(request):
             query = request.GET['query']
             matching_posts = Post.objects.filter(text__icontains=query)
     return render(request, 'blog/search_results.html',
-                  {'matching_posts': matching_posts})
+                  {'posts': matching_posts})
 
 
 @login_required

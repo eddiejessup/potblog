@@ -1,50 +1,69 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
         {% block style %}
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/1.2/base.min.css">
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/1.2/skeleton.min.css">
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/skeleton/1.2/layout.min.css">
-            {% load staticfiles %}
-            <link rel="stylesheet" href="{% static 'blog/style.css' %}">
+            <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+            <!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css"> -->
+            <link rel="stylesheet" href="{% static 'blog/css/clean-blog.css' %}">
+            <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
         {% endblock %}
         <title>{% block title %}{% endblock %}</title>
         {% block scripts %}
             <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+            <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         {% endblock %}
     </head>
     <body>
         <div class="container">
-            <nav class="navbar navbar-default navbar-fixed-top">
-                <div class="container">
-                    <div class="navbar-header">
-                        <a href="{% url 'blog:home' %}" class="navbar-brand">PotBlog</a>
+            <nav class="navbar">
+
+                <ul class="nav navbar-nav nav-pills">
+                    <li><a href="{% url 'blog:home' %}" class="btn">Home</a></li>
+                    <li><a href="{% url 'blog:about' %}" class="btn">About</a></li>
+                </ul>
+
+
+                {% if user.is_authenticated %}
+                    <ul class="nav nav-pills navbar-right">
+                        <li class="navbar nav"><span class="nav navbar-text">Signed in as {{ user.username }}</span></li>
+                        <li class="navbar nav"><a href="{% url 'blog:create_post' %}" class="btn">Create post</a></li>
+                        <li class="navbar nav"><a href="{% url 'accounts:logout' %}" class="btn">Log out</a></li>
+                    </ul>
+                {% endif %}
+
+                <form action="{% url 'blog:search' %}" class="navbar-form pull-right" id="search" role="search" method="get">
+                    <div class="form-group">
+                        <input type="text" name="query" placeholder="Search" class="form-control" id="search-box">
+                        <button type="submit" class="btn-custom">
+                            <span class="glyphicon glyphicon-search" id="search-icon"></span>
+                        </button>
                     </div>
-                    <div id="navbar-main">
-                        <form action="{% url 'blog:search' %}" class="navbar-form navbar-right" id="search" role="search" method="get">
-                            <div class="form-group">
-                                <input type="text" name="query" placeholder="Search" class="form-control">
-                                <input type="submit" value="Search" class="btn btn-default">
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                </form>
             </nav>
 
-            <header>
-                {% if user.is_authenticated %}
-                    <p id="login-header">Logged in as {{ user.username }} (<a href="{% url 'accounts:logout' %}" id="logout">Log out</a>) | <a href="{% url 'blog:create_post' %}" id="create-post">Create post</a></p>
-                {% endif %}
+            <div class="messages">
                 {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                    {% endfor %}
-                </ul>
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li>
+                                <div class="alert alert-{{ message.tags }}">
+                                    <a href="#" class="close" data-dismiss="alert">&times;</a>
+                                    {{ message }}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-            </header>
+            </div>
 
-            {% block content %}{% endblock %}
+            <div class="page-header">
+                <h1>{% block heading %}{% endblock %}</h1>
+            </div>
+
+            {% block content %}
+            {% endblock %}
         </div>
     </body>
 </html>

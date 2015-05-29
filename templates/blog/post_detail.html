@@ -4,61 +4,59 @@
 
 {% block title %}PotBlog - {{ post.title }}{% endblock title %}
 
-{% block content %}
-    <div class="post">
-        <h1 class="post-title">
-            <a href="{% url 'blog:post_detail' post.pk %}">{{ post.title }}</a>
-            {% if user.is_authenticated %}
-                <span id="post-update">(<a href="{% url 'blog:update_post' post.pk %}">Update</a>)</span>
-            {% endif %}
-        </h1>
-        <p class="post-text">{{ post.text }}</p>    
+{% block heading %}
+    <a href="{% url 'blog:post_detail' post.pk %}">{{ post.title }}</a>
+    {% if user.is_authenticated %}
+        <small>(<a href="{% url 'blog:update_post' post.pk %}">Update</a>)</small>
+    {% endif %}
+{% endblock %}
 
-        <p class="post-date">- Posted on {{ post.date_published }}</p>
+{% block content %}
+    <div>
+        <p>{{ post.text }}</p>
+        <p><span class="glyphicon glyphicon-time"></span> {{ post.date_published }}</p>
     </div>
 
     <hr>
 
-    <div class="comments">
-        <h2 id="comment-title">Comments</h2>
+    <div>
+        <h3><span class="glyphicon glyphicon-comment"></span> {{ post.num_comments }} Comment{{ post.num_comments|pluralize }}</h3>
 
         {% if comments %}
-            <ul>
             {% for comment in comments %}
-                <li>
-                    <h3 id="comment-author">{{ comment.author }}</h3>
-                    <h3 id="comment-email">{{ comment.email }}</h3>
-                    {% if comment.is_hidden %}
-                        <p id="comment-hidden">[ Hidden ]</p>
-                    {% else %}
-                        <p id="comment-text">{{ comment.text }}</p>
-                    {% endif %}
-                    <h4 id="comment-date">{{ comment.date_published }}</h4>
-
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong>{{ comment.author }}</strong> <span class="text-muted">{{ comment.time_published }}</span>
+                    </div>
+                    <div class="panel-body">
+                        {% if comment.is_hidden %}
+                            <p class="text-muted">[ Hidden ]</p>
+                        {% else %}
+                            <p>{{ comment.text }}</p>
+                        {% endif %}
+                    </div>
                     {% if user.is_authenticated %}
-                        <form action="{% url 'blog:hide_comment' comment.pk %}" method="post">
-                            {% csrf_token %}
-                            {% if comment.is_hidden %}
-                                <input type="submit" value="Unhide" class="hide-button"/>
-                            {% else %}
-                                <input type="submit" value="Hide" class="hide-button"/>
-                            {% endif %}
-                        </form>
+                        <div class="panel-footer">
+                            <form action="{% url 'blog:hide_comment' comment.pk %}" method="post" class="form">
+                                {% csrf_token %}
+                                {% if comment.is_hidden %}
+                                    <input type="submit" value="Unhide" class="btn btn-default"/>
+                                {% else %}
+                                    <input type="submit" value="Hide" class="btn btn-default"/>
+                                {% endif %}
+                            </form>
+                        </div>
                     {% endif %}
-                </li>
+                </div>
             {% endfor %}
-            </ul>
-        {% else %}
-            <p id="no-comments">No comments.</p>
         {% endif %}
     </div>
 
-    <div class="comment-form">
-        <form action="{% url 'blog:post_detail' post.pk %}" method="post">
+    <div>
+        <form action="{% url 'blog:post_detail' post.pk %}" method="post" class="form">
             {% csrf_token %}
-            {% load bootstrap3 %}
             {% bootstrap_form comment_form %}
-            <input type="submit" value="Comment" id="comment-button"/>
+            <input type="submit" value="Comment" class="btn btn-default"/>
         </form>
     </div>
 

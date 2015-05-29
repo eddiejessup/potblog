@@ -1,0 +1,38 @@
+.post-date {
+    margin-top: 2em;
+    font-size: 1.2em;
+}
+
+.navbar-text {
+    margin-top: 5px;
+}
+
+.messages ul {
+    list-style-type: none;
+}
+
+#search-box {
+    margin-top: -5px;
+    font-size: 1em;
+}
+
+button.btn-custom {
+    border-style: none;
+    background: none;
+    border: 0px solid #0085a1 !important;
+    border-radius: 4px;
+}
+
+button:hover.btn-custom {
+    border-style: none;
+    background: none;
+    color: white !important;
+    background-color: #0085a1 !important;
+}
+
+nav a:hover {
+  color: white !important;
+  background-color: #0085a1 !important;
+  border: 1px solid #0085a1 !important;
+}
+

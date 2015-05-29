@@ -1,14 +1,16 @@
 {% extends "blog/base.html" %}
 
+{% load bootstrap3 %}
+
 {% block title %}PotBlog - Create post{% endblock title %}
 
-{% block content %}
-<h1>Update post</h1>
+{% block heading %}Create post{% endblock %}
 
-<form action="{{ request.path }}" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Create" />
-</form>
+{% block content %}
+    <form action="{{ request.path }}" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        <input type="submit" value="Create" class="btn btn-default"/>
+    </form>
 {% endblock content %}
 

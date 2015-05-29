@@ -1,0 +1,40 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+    <div class="col-md-10 col-sm-9">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="row">    
+                    <h3><a href="{% url 'blog:post_detail' post.pk %}">{{ post.title }}</a></h3>
+                    <p>{{ post.text|truncatewords:20 }}</p>
+                    <ul class="list-inline">
+                        <li><span class="glyphicon glyphicon-time"></span> {{ post.date_published }}</li>
+                        <li><span class="glyphicon glyphicon-comment"></span> {{ post.num_comments }} Comment{{ post.num_comments|pluralize }}</li>
+                    </ul>
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>No posts are available.</p>
+        {% endif %}
+    </div>
+
+
+    <div class="col-md-10 col-sm-9">
+        <nav>
+            <ul class="pager">
+                {% if posts.has_previous %}
+                    <li class="previous">
+                        <a href="{% url 'blog:home_page' page=posts.previous_page_number %}">&larr; Newer</a>
+                    </li>
+                {% endif %}
+                {% if posts.has_next %}
+                    <li class="next">
+                        <a href="{% url 'blog:home_page' page=posts.next_page_number %}">Older &rarr;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+
+{% endblock content %}

@@ -13,6 +13,9 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    def num_comments(self):
+        return Comment.objects.filter(post__pk=self.pk).count()
+
 
 class Comment(models.Model):
     post = models.ForeignKey('Post')
